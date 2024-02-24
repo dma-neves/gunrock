@@ -71,7 +71,8 @@ struct enactor_t : gunrock::enactor_t<problem_t> {
   void loop(gcuda::multi_context_t& context) override {
     // TODO: Use a parameter (enum) to select between the two:
     // Maybe use the existing advance_direction_t enum.
-    pull(context);
+    //pull(context);
+    push(context);
   }
 
   void push(gcuda::multi_context_t& context) {

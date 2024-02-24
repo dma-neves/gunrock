@@ -13,8 +13,12 @@
 #include <thrust/iterator/counting_iterator.h>
 #include <thrust/inner_product.h>
 
+//#define PRINT_NITER
+
 namespace gunrock {
 namespace pr {
+
+  int niter;
 
 template <typename weight_t>
 struct param_t {
@@ -93,6 +97,7 @@ struct problem_t : gunrock::problem_t<graph_t> {
 
 template <typename problem_t>
 struct enactor_t : gunrock::enactor_t<problem_t> {
+
   enactor_t(problem_t* _problem,
             std::shared_ptr<gcuda::multi_context_t> _context,
             enactor_properties_t _properties)
@@ -103,6 +108,7 @@ struct enactor_t : gunrock::enactor_t<problem_t> {
   using weight_t = typename problem_t::weight_t;
 
   void loop(gcuda::multi_context_t& context) override {
+
     // Data slice
     auto E = this->get_enactor();
     auto P = this->get_problem();
@@ -188,6 +194,12 @@ struct enactor_t : gunrock::enactor_t<problem_t> {
         policy, thrust::counting_iterator<vertex_t>(0),
         thrust::counting_iterator<vertex_t>(n_vertices), abs_diff,
         (weight_t)0.0, thrust::maximum<weight_t>());
+
+    #ifdef PRINT_NITER
+    if(err < tol)
+      std::cout << "niterations: " << this->iteration << std::endl;
+    #endif
+    niter = this->iterations;
 
     return err < tol;
   }
