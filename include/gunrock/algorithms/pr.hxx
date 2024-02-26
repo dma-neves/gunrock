@@ -199,7 +199,7 @@ struct enactor_t : gunrock::enactor_t<problem_t> {
     if(err < tol)
       std::cout << "niterations: " << this->iteration << std::endl;
     #endif
-    niter = this->iterations;
+    niter = this->iteration;
 
     return err < tol;
   }
